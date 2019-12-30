@@ -46,7 +46,7 @@ class WikipediaXmlLoader
     end
 
     def prepare_article
-      @current_article = {}
+      @current_article = { text: "" }
     end
 
     def start_element(name, _ = [])
@@ -55,17 +55,11 @@ class WikipediaXmlLoader
     end
 
     def characters(text)
-      return unless current_article[:text].blank?
-
-      current_article[:title] = text if in_page && in_title
-      process_article(text) if in_revision && in_text
-    end
-
-    def process_article(text)
       text = text.strip
       return if text.blank?
 
-      current_article[:text] = text
+      current_article[:title] = text if in_page && in_title
+      current_article[:text] += text if in_revision && in_text
     end
 
     def end_element(name)
