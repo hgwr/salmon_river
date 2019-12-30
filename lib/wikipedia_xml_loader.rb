@@ -2,28 +2,32 @@ require 'nokogiri'
 
 # Wikipedia XML Loader
 class WikipediaXmlLoader
+  class MaximumNumberHasBeenReached < StandardError; end
+
   attr_accessor :file, :max_num_reads
 
   def initialize(file, max_num_reads = 1000)
     @file = file
-    @max_num_reads = max_num_reads
+    @max_num_reads = max_num_reads.to_i
     @handler = nil
   end
 
   def load
-    prepare_handler
+    num_articles = 0
+    @handler = DocHandler.new do |article|
+      raise MaximumNumberHasBeenReached if num_articles >= max_num_reads
+      article = Article.new(title: article[:title], content: article[:text], revision_timestamp: article[:timestamp])
+      num_articles += 1 if article.save
+    end
+    parse
+  end
+
+  def parse
     parser = Nokogiri::XML::SAX::Parser.new(@handler)
     io = file.is_a?(IO) ? file : File.open(file)
     parser.parse(io)
-  end
-
-  def prepare_handler
-    num_articles = 0
-    @handler = DocHandler.new do |article|
-      article = Article.new(title: article[:title], content: article[:text], revision_timestamp: article[:timestamp])
-      num_articles += 1 if article.save
-      break if num_articles > max_num_reads
-    end
+  rescue MaximumNumberHasBeenReached
+    io.close
   end
 
   # Wikipedia XML Document Handler
