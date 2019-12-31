@@ -16,7 +16,9 @@ class WikipediaXmlLoader
     num_articles = 0
     @handler = DocHandler.new do |article|
       raise MaximumNumberHasBeenReached if num_articles >= max_num_reads
+
       article = Article.new(title: article[:title], content: article[:text], revision_timestamp: article[:timestamp])
+      article.content = article.content.slice(1, 10000)
       num_articles += 1 if article.save
     end
     parse
@@ -46,7 +48,7 @@ class WikipediaXmlLoader
     end
 
     def prepare_article
-      @current_article = { text: "" }
+      @current_article = { text: '', end_rivision: false }
     end
 
     def start_element(name, _ = [])
@@ -55,20 +57,17 @@ class WikipediaXmlLoader
     end
 
     def characters(text)
-      text = text.strip.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '〓')
-      return if text.blank?
-
       current_article[:title] = text if in_page && in_title
-      current_article[:text] += text if in_revision && in_text
+      current_article[:text] += text if in_revision && in_text && !@current_article[:end_revision]
     end
 
     def end_element(name)
       send("in_#{name}=", false) if MONITORED_TAGS.member?(name)
+      @current_article[:end_revision] = true if name == 'revision'
       generate_article if name == 'page'
     end
 
     def generate_article
-      warn current_article[:title]
       current_article[:title].gsub!(/^Wikipedia: /, '')
       @block.call(current_article)
     end
