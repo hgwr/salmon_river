@@ -1,7 +1,7 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-<%= form_with(url: search_articles_path, method: "get") do %>
+<%= form_with(url: search_articles_path, method: "get", data: { remote: false }) do %>
   <%= label_tag(:q, "Search for:") %>
   <%= text_field_tag(:q, @keyword) %>
   <%= submit_tag("Search") %>
