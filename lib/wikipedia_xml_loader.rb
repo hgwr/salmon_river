@@ -55,7 +55,7 @@ class WikipediaXmlLoader
     end
 
     def characters(text)
-      text = text.strip
+      text = text.strip.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '〓')
       return if text.blank?
 
       current_article[:title] = text if in_page && in_title
@@ -68,6 +68,7 @@ class WikipediaXmlLoader
     end
 
     def generate_article
+      warn current_article[:title]
       current_article[:title].gsub!(/^Wikipedia: /, '')
       @block.call(current_article)
     end
