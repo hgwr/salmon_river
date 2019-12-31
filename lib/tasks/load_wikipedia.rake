@@ -3,5 +3,7 @@ namespace :load_wikipedia do
   task :xml, %w(filename max_num_reads) => :environment do |_, args|
     loader = WikipediaXmlLoader.new(args.filename, args.max_num_reads || 1000)
     loader.load
+    Article.__elasticsearch__.create_index!
+    Article.import
   end
 end
