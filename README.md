@@ -6,12 +6,12 @@ https://github.com/elastic/elasticsearch-rails と ElasticSearch を使ってみ
 
 * System dependencies
 
-- ElasticSearch
-- MySQL
+  - ElasticSearch
+  - MySQL
 
 * Configuration
 
-** ElasticSearch and Kibana
+  - ElasticSearch and Kibana
 
 ```
 docker pull docker.elastic.co/elasticsearch/elasticsearch:7.5.1
