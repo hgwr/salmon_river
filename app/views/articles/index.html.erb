@@ -1,5 +1,17 @@
 <p id="notice"><%= notice %></p>
 
+<p>
+<%= form_with(url: search_articles_path, method: "get") do %>
+  <%= label_tag(:q, "Search for:") %>
+  <%= text_field_tag(:q, @keyword) %>
+  <%= submit_tag("Search") %>
+<% end %>
+</p>
+
+<ul>
+  <li><%= paginate @articles %></li>
+</ul>
+
 <h1>Articles</h1>
 
 <table>

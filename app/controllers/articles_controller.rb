@@ -3,13 +3,15 @@ class ArticlesController < ApplicationController
   before_action :set_article, only: %i(show edit update destroy)
 
   def search
-    @articles = Article.search(params[:q]).records
+    @keyword = params[:q]
+    @articles = Article.search(@keyword).records.order(:created_at).page params[:page]
+    render 'index'
   end
 
   # GET /articles
   # GET /articles.json
   def index
-    @articles = Article.all
+    @articles = Article.order(:created_at).page params[:page]
   end
 
   # GET /articles/1
