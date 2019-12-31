@@ -6,7 +6,7 @@ class WikipediaXmlLoader
 
   attr_accessor :file, :max_num_reads
 
-  def initialize(file, max_num_reads = 1000)
+  def initialize(file, max_num_reads = 1_000)
     @file = file
     @max_num_reads = max_num_reads.to_i
     @handler = nil
@@ -18,7 +18,7 @@ class WikipediaXmlLoader
       raise MaximumNumberHasBeenReached if num_articles >= max_num_reads
 
       article = Article.new(title: article[:title], content: article[:text], revision_timestamp: article[:timestamp])
-      article.content = article.content.slice(1, 10000)
+      article.content = Nokogiri::HTML(article.content).text.slice(1, 20_000)
       num_articles += 1 if article.save
     end
     parse
@@ -48,7 +48,7 @@ class WikipediaXmlLoader
     end
 
     def prepare_article
-      @current_article = { text: '', end_rivision: false }
+      @current_article = { text: '', end_revision: false }
     end
 
     def start_element(name, _ = [])
