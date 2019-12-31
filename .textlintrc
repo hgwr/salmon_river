@@ -1,0 +1,35 @@
+{
+  "filters": {},
+  "rules": {
+    "@textlint-ja/no-insert-dropping-sa": true,
+    "ja-hiragana-fukushi": true,
+    "ja-hiragana-hojodoushi": false,
+    "ja-hiragana-keishikimeishi": true,
+    "max-appearence-count-of-words": {
+      "limit": 8
+    },
+    "no-surrogate-pair": true,
+    "prefer-tari-tari": true,
+    "preset-ja-technical-writing": {
+      "max-kanji-continuous-len": {
+        max: 8
+      },
+      "sentence-length": {
+        max: 200
+      },
+      "no-doubled-joshi": {
+        "min_interval": 1,
+        "strict": false,
+        "allow": ["に", "たり"]
+      },
+      "ja-no-mixed-period": {
+        "allowPeriodMarks": [":"]
+      },
+      "arabic-kanji-numbers": false,
+      "ja-no-mixed-period": false,
+      "ja-no-weak-phrase": false,
+      "no-exclamation-question-mark": false
+    },
+    "web-plus-db": true
+  }
+}
